@@ -45,7 +45,7 @@ const tabsAppender = (selector) => {
 
     const tabs = Tabs(topics);
 
-    const targetElement = document.createElement(selector)
+    const targetElement = document.querySelector(selector)
     if(targetElement) {
       targetElement.appendChild(tabs)
     } else {
@@ -54,7 +54,7 @@ const tabsAppender = (selector) => {
 
   })
   .catch((error)=>{
-    console.error('fetch error:', error)
+    console.error('Fetch error:', error)
   })
 
 

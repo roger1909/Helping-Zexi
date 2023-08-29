@@ -1,47 +1,36 @@
+// Modify the Card component to accept an article object
 const Card = (article) => {
+  // Create the card elements
+  const cardDiv = document.createElement('div');
+  cardDiv.classList.add('card');
 
-const div = document.createElement('div')
-div.classList.add('card')
+  const headlineDiv = document.createElement('div');
+  headlineDiv.classList.add('headline');
+  headlineDiv.textContent = article.headline;
 
+  const authorDiv = document.createElement('div');
+  authorDiv.classList.add('author');
 
-const divHeadline = document.createElement('div')
-divHeadline.classList.add('headline')
-divHeadline.textContent = article.headline
+  const divImgContainer = document.createElement('div');
+  divImgContainer.classList.add('img-container');
 
-const divAuthor = document.createElement('div')
-divAuthor.classList.add('author')
+  // Create the image element
+  const img = document.createElement('img');
+  img.src = article.authorPhoto; // Set the image source
 
-const divImgContainer = document.createElement('div')
-divImgContainer.classList.add('img-container')
+  const span = document.createElement('span');
+  span.textContent = `By ${article.authorName}`;
 
-const img = document.createElement('img')
-img.src = article.authorPhoto
+  // Append the elements to the card
+  authorDiv.appendChild(divImgContainer);
+  divImgContainer.appendChild(img);
+  authorDiv.appendChild(span);
 
- const span = document.createElement('span')
-span.textContent = `By ${article.authorName}`
+  cardDiv.appendChild(headlineDiv);
+  cardDiv.appendChild(authorDiv);
 
-
-
-
-div.addEventListener('click', () => {
-  console.log(article.headline)
-})
-
-
-
-
-div.appendChild(divHeadline)
-div.appendChild(divAuthor)
-div.appendChild(span)
-divAuthor.appendChild(divImgContainer)
-divImgContainer.appendChild(img)
-
-
-
-
-return div
-
-
+  return cardDiv;
+};
 
 
 
@@ -63,31 +52,34 @@ return div
   //   </div>
   // </div>
   //
-}
-
-const cardAppender = (selector) => {
 
 
-  fetch(`http://localhost:5001/api/articles`)
-  .then((res)=> res.json())
-  .then((data)=> {
-    if(Array.isArray(data.articles)) {
-      data.articles.forEach((article)=> {
-        const card = Card(article);
-        const targetElement = document.querySelector(selector);
-        if(targetElement){
-          targetElement.appendChild(card)
+  const cardAppender = (selector) => {
+    fetch(`http://localhost:5001/api/articles`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.articles) {
+          const targetElement = document.querySelector(selector);
+          if (targetElement) {
+            // Iterate through topics and articles to create cards
+            Object.values(data.articles).forEach((articlesArray) => {
+              articlesArray.forEach((article) => {
+                const card = Card(article);
+                targetElement.appendChild(card);
+              });
+            });
+          } else {
+            console.error('element not found');
+          }
         } else {
-          console.error('element not found')
+          console.error('invalid response');
         }
       })
-    } else {
-      console.error('invalid response') 
-    }})
-    .catch((error)=> {
-      console.error('fetch error')
-    })
-
+      .catch((error) => {
+        console.error('fetch error', error);
+      });
+  };
+  
 
   
 
@@ -99,6 +91,6 @@ const cardAppender = (selector) => {
   // Create a card from each and every article object in the response, using the Card component.
   // Append each card to the element in the DOM that matches the selector passed to the function.
   //
-}
+
 
 export { Card, cardAppender }
